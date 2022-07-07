@@ -18,6 +18,7 @@
 
 package com.tencent.shadow.sample.host;
 
+import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
@@ -29,6 +30,7 @@ import com.tencent.shadow.core.common.LoggerFactory;
 import com.tencent.shadow.dynamic.host.DynamicRuntime;
 import com.tencent.shadow.dynamic.host.PluginManager;
 import com.tencent.shadow.sample.host.lib.HostUiLayerProvider;
+import com.tencent.shadow.sample.host.lib.PluginBridgeHolder;
 import com.tencent.shadow.sample.host.manager.Shadow;
 
 import java.io.File;
@@ -57,7 +59,8 @@ public class HostApplication extends Application {
         }
 
         PluginHelper.getInstance().init(this);
-
+        PluginBridgeHolder.initBridge(new PluginBridgeIml());
+        PluginBridgeHolder.getBridge().addHostData("ShadowHelper", ShadowHelperIml.getInstance());
         HostUiLayerProvider.init(this);
     }
 
@@ -93,7 +96,7 @@ public class HostApplication extends Application {
 
     private static boolean isProcess(Context context, String processName) {
         String currentProcName = "";
-        ActivityManager manager =
+        @SuppressLint("WrongConstant") ActivityManager manager =
                 (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningAppProcessInfo processInfo : manager.getRunningAppProcesses()) {
             if (processInfo.pid == myPid()) {

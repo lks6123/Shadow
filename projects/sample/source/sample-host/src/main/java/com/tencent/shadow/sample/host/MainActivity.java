@@ -23,6 +23,8 @@ import static com.tencent.shadow.sample.constant.Constant.PART_KEY_PLUGIN_BASE;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -30,6 +32,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.tencent.shadow.dynamic.host.EnterCallback;
 import com.tencent.shadow.sample.constant.Constant;
 import com.tencent.shadow.sample.host.plugin_view.HostAddPluginViewActivity;
 
@@ -40,6 +43,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTheme(R.style.TestHostTheme);
+/*
 
         LinearLayout rootView = new LinearLayout(this);
         rootView.setOrientation(LinearLayout.VERTICAL);
@@ -96,8 +100,40 @@ public class MainActivity extends Activity {
             startActivity(intent);
         });
         rootView.addView(startHostAddPluginViewActivityButton);
+*/
 
-        setContentView(rootView);
+        setContentView(R.layout.activity_main);
+        findViewById(R.id.btn_jump_plugin).setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putString(Constant.KEY_PLUGIN_ZIP_PATH, PluginHelper.getInstance().pluginZipFile.getAbsolutePath());
+            bundle.putString(Constant.KEY_PLUGIN_PART_KEY, PART_KEY_PLUGIN_BASE);
+            bundle.putString(Constant.KEY_ACTIVITY_CLASSNAME, "com.tencent.shadow.sample.plugin.app.lib.TestActivity");
+
+            ShadowHelperIml.getInstance().getManager().enter(
+                    HostApplication.getApp().getApplicationContext(),
+                    Constant.FROM_ID_START_ACTIVITY,
+                    bundle,
+                    new EnterCallback() {
+                        @Override
+                        public void onShowLoadingView(View view) {
+
+                        }
+
+                        @Override
+                        public void onCloseLoadingView() {
+
+                        }
+
+                        @Override
+                        public void onEnterComplete() {
+                            /*new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                                finish();
+                            },100);*/
+                            finish();
+                        }
+                    }
+            );
+        });
 
     }
 

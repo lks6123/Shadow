@@ -29,6 +29,8 @@ import android.os.RemoteException;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import com.tencent.shadow.core.common.Logger;
+import com.tencent.shadow.core.common.LoggerFactory;
 import com.tencent.shadow.core.manager.installplugin.InstalledPlugin;
 import com.tencent.shadow.dynamic.host.EnterCallback;
 import com.tencent.shadow.sample.constant.Constant;
@@ -38,6 +40,7 @@ import java.util.concurrent.Executors;
 
 
 public class SamplePluginManager extends FastPluginManager {
+    private Logger mLogger = LoggerFactory.getLogger(SamplePluginManager.class);
 
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
@@ -142,7 +145,10 @@ public class SamplePluginManager extends FastPluginManager {
                     throw new RuntimeException(e);
                 }
                 if (callback != null) {
+                    mLogger.debug("startPluginActivity success,partKey = "
+                            + partKey + "activityName = " + className);
                     callback.onCloseLoadingView();
+                    callback.onEnterComplete();
                 }
             }
         });
